@@ -38,7 +38,8 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
       const db = await makeDb()
       const result = await db
         .collection(collection ?? defaultCollection)
-        .deleteOne(obj)
+        .deleteOne(
+          copyRenameProperty(obj, 'id', '_id'))
       return result == null
         ? null
         : result.deletedCount === 1
