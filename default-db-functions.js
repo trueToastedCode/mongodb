@@ -29,7 +29,7 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
           copyRenameProperty(obj, 'id', '_id'))
       return result == null
         ? null
-        : renameProperty(result, '_id', 'id')
+        : { ...obj, id: result.insertedId }
     }
     function removeOneById (id, collection = null) {
       return removeOne({ id }, collection)
