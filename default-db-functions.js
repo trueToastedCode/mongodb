@@ -1,15 +1,19 @@
-export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenameProperty }) {
+export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenameProperty, findFirstOfKeys }) {
   return function makeDefaultDbFunctions({ makeDb, defaultCollection }) {
     return Object.freeze({
-      findOneById,
+      findOneByVarious,
       findOne,
       insertOne,
-      removeOneById,
+      removeOneByVarious,
       removeOne,
       updateOne
     })
-    function findOneById (id, collection = null) {
-      return findOne({ id }, collection)
+    function findOneByVarious (obj, keys, collection = null) {
+      const result = findFirstOfKeys(obj, keys)
+      if (result == null) {
+        throw new Error(`Expected at least one key of ${keys}`)
+      }
+      return findOne(result, collection)
     }
     async function findOne (obj, collection = null) {
       const db = await makeDb()
@@ -31,8 +35,12 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
         ? null
         : { ...obj, id: result.insertedId }
     }
-    function removeOneById (id, collection = null) {
-      return removeOne({ id }, collection)
+    function removeOneByVarious (obj, keys, collection = null) {
+      const result = findFirstOfKeys(obj, keys)
+      if (result == null) {
+        throw new Error(`Expected at least one key of ${keys}`)
+      }
+      return removeOne(result, collection)
     }
     async function removeOne (obj, collection = null) {
       const db = await makeDb()
