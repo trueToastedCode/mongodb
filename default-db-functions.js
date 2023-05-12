@@ -1,4 +1,4 @@
-export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenameProperty, findFirstOfKeys }) {
+export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenameProperty, findFirstOfKeys, CustomError }) {
   return function makeDefaultDbFunctions({ makeDb, defaultCollection }) {
     return Object.freeze({
       findOneByVarious,
@@ -11,7 +11,7 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
     function findOneByVarious (obj, keys, collection = null) {
       const result = findFirstOfKeys(obj, keys)
       if (result == null) {
-        throw new Error(`Expected at least one key of ${keys}`)
+        throw new CustomError(`Expected at least one key of ${keys}`, 400)
       }
       return findOne(result, collection)
     }
@@ -38,7 +38,7 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
     function removeOneByVarious (obj, keys, collection = null) {
       const result = findFirstOfKeys(obj, keys)
       if (result == null) {
-        throw new Error(`Expected at least one key of ${keys}`)
+        throw new CustomError(`Expected at least one key of ${keys}`, 400)
       }
       return removeOne(result, collection)
     }
