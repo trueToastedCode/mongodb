@@ -7,6 +7,7 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
       insertOne,
       removeOneByVarious,
       removeOne,
+      removeAll,
       updateOne
     })
     function findOneByVarious (obj, keys, collection = null) {
@@ -65,6 +66,16 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
       return result == null
         ? null
         : result.deletedCount === 1
+    }
+    async function removeAll (obj, collection = null) {
+      const db = await makeDb()
+      const result = await db
+        .collection(collection ?? defaultCollection)
+        .deleteMany(
+          copyRenameProperty(obj, 'id', '_id'))
+      return result == null
+        ? null
+        : result.deletedCount > 0
     }
     async function updateOne ({ id: _id, ...info }, collection = null) {
       const db = await makeDb()
