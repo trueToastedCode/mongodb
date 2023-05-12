@@ -3,6 +3,7 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
     return Object.freeze({
       findOneByVarious,
       findOne,
+      findAll,
       insertOne,
       removeOneByVarious,
       removeOne,
@@ -24,6 +25,19 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
       return result == null
         ? null
         : renameProperty(result, '_id', 'id')
+    }
+    async function findAll (obj, collection = null) {
+      const db = await makeDb()
+      const result = await db
+        .collection(collection ?? defaultCollection)
+        .find(
+          copyRenameProperty(obj, 'id', '_id'))
+      if (result == null) {
+        return null
+      }
+      result = await result.toArray()
+      return result.map(
+        item => renameProperty(item, '_id', 'id'))
     }
     async function insertOne (obj, collection = null) {
       const db = await makeDb()
