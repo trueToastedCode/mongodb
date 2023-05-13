@@ -36,8 +36,7 @@ export default function buildMakeDefaultDbFunctions ({ renameProperty, copyRenam
       if (result == null) {
         return null
       }
-      result = await result.toArray()
-      return result.map(
+      return (await result.toArray()).map(
         item => renameProperty(item, '_id', 'id'))
     }
     async function insertOne (obj, collection = null) {
